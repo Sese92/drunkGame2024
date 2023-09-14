@@ -1,0 +1,66 @@
+{
+  "translation": {
+    "welcome": "Let´s get drunk!",
+    "how_to": "How do you want to do it?",
+    "j": "J",
+    "bus": "Bus game",
+    "continue": "Continue",
+    "cancel": "Cancel",
+    "play_again": "Play again",
+    "main_menu": "Go to main menu",
+    "languages": {
+      "english": "English",
+      "spanish": "Spanish",
+      "ukrainian": "Ukrainian"
+    },
+    "game_configuration": {
+      "nb_players": "Number of players",
+      "nb_jokers": "Number of jokers",
+      "nb_decks": "Number of decks",
+      "players": "Players",
+      "player": "Player",
+      "play": "Play now!"
+    },
+    "j_game": {
+      "first_round": "First round",
+      "players": "J players",
+      "roll": "Roll it!",
+      "rules": {
+        "new_rule": "Add a new rule",
+        "left": "The one on the left drink",
+        "right": "The one on the right drink",
+        "j": "All the J drink",
+        "q": "...",
+        "k": "The ones by your side drink"
+      }
+    },
+    "bus_game": {
+      "options": {
+        "red": "Red",
+        "black": "Black",
+        "up": "Up",
+        "down": "Down",
+        "same": "Same",
+        "between": "Between",
+        "outside": "Outside",
+        "different": "Different"
+      },
+      "next_round": "Next round",
+      "send": "Send",
+      "drink": "Drink",
+      "shot": "Shot",
+      "all_drink": "All drink",
+      "nb_rows": "Number of rows",
+      "finish": "Finish",
+      "next_card": "Next card",
+      "title": "There are players with cards",
+      "info": "Are you sure you want to go to the next card?",
+      "final_round": "Final Round",
+      "no_cards": "Player without cards",
+      "place": "Place card",
+      "to_final": "Go to final round",
+      "last_card": "Last card before restart",
+      "game_finished": "You have finished the game"
+    }
+  }
+}
