@@ -2,7 +2,12 @@ import React, { useEffect, useRef } from 'react';
 
 import { StyleSheet, View, Text } from 'react-native';
 import { useTheme } from '@react-navigation/native';
-import FlipCard from 'react-native-flip-card';
+import Animated, {
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 
 import { margins, paddings } from '../../style/spacing';
 import { actuatedNormalize } from './Numbers/One';
@@ -21,17 +26,40 @@ import {
   Joker,
 } from './Numbers';
 
-export const Card = ({ card, flip, styles }) => {
+export const Card = ({ card, flip }) => {
   const { colors } = useTheme();
-  var cardDisplay;
   const isFirstRun = useRef(true);
+  const spin = useSharedValue(1);
+
   useEffect(() => {
     if (isFirstRun.current) {
       isFirstRun.current = false;
       return;
     }
-    cardDisplay.flip();
+    spin.value = spin.value ? 0 : 1;
   }, [flip]);
+
+  const rStyle = useAnimatedStyle(() => {
+    const spinVal = interpolate(spin.value, [0, 1], [0, 180]);
+    return {
+      transform: [
+        {
+          rotateY: withTiming(`${spinVal}deg`, { duration: 500 }),
+        },
+      ],
+    };
+  }, []);
+
+  const bStyle = useAnimatedStyle(() => {
+    const spinVal = interpolate(spin.value, [0, 1], [180, 360]);
+    return {
+      transform: [
+        {
+          rotateY: withTiming(`${spinVal}deg`, { duration: 500 }),
+        },
+      ],
+    };
+  }, []);
 
   function RenderCard() {
     switch (card.number) {
@@ -72,48 +100,20 @@ export const Card = ({ card, flip, styles }) => {
   }
 
   return (
-    <FlipCard
-      style={styles}
-      flipHorizontal={true}
-      ref={(c) => (cardDisplay = c)}>
-      {/* Back Side */}
-      <View
-        style={{
-          borderRadius: 10,
-          borderWidth: 4,
-          borderColor: colors.black,
-          padding: 20,
-          backgroundColor: colors.white,
-        }}>
-        <View
-          style={{
-            backgroundColor: colors.primary,
-            width: '100%',
-            height: '100%',
-            borderRadius: 10,
-            justifyContent: 'center',
-          }}>
-          <Text
-            style={{
-              textAlign: 'center',
-              fontSize: 80,
-              fontWeight: 'bold',
-              textTransform: 'uppercase',
-              color: colors.info,
-            }}>
-            Bus game
-          </Text>
-        </View>
-      </View>
-      {/* Front Side */}
-      <View
-        style={{
-          backgroundColor: colors.white,
-          borderRadius: 20,
-          borderColor: colors.black,
-          borderWidth: 4,
-        }}
-        onPress={() => cardDisplay.flip()}>
+    <View style={{ height: '55%', width: '80%' }}>
+      <Animated.View
+        style={[
+          rStyle,
+          {
+            backgroundColor: colors.white,
+            borderRadius: 20,
+            borderColor: colors.black,
+            borderWidth: 4,
+            backfaceVisibility: 'hidden',
+            zIndex: 10,
+          },
+        ]}
+        onPress={() => (spin.value = spin.value ? 0 : 1)}>
         {card ? (
           <View>
             <Text
@@ -178,8 +178,43 @@ export const Card = ({ card, flip, styles }) => {
             </View>
           </View>
         )}
-      </View>
-    </FlipCard>
+      </Animated.View>
+      <Animated.View
+        style={[
+          bStyle,
+          {
+            width: '100%',
+            height: '100%',
+            position: 'absolute',
+            borderRadius: 20,
+            borderWidth: 4,
+
+            borderColor: colors.black,
+            padding: 20,
+            backgroundColor: colors.white,
+          },
+        ]}>
+        <View
+          style={{
+            backgroundColor: colors.primary,
+            width: '100%',
+            height: '100%',
+            borderRadius: 10,
+            justifyContent: 'center',
+          }}>
+          <Text
+            style={{
+              textAlign: 'center',
+              fontSize: 80,
+              fontWeight: 'bold',
+              textTransform: 'uppercase',
+              color: colors.info,
+            }}>
+            Bus game
+          </Text>
+        </View>
+      </Animated.View>
+    </View>
   );
 };
 

@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Portal } from 'react-native-portalize';
 
-import { SafeAreaView, View } from 'react-native';
-import DropDownPicker from 'react-native-dropdown-picker';
+import { SafeAreaView, StyleSheet, View } from 'react-native';
+import RNPickerSelect from 'react-native-picker-select';
 import { useTranslation } from 'react-i18next';
 
 import { useNavigation, useTheme } from '@react-navigation/native';
@@ -27,6 +27,27 @@ export const Main = () => {
 
   const [showSplash, setShowSplash] = useState(false);
 
+  const pickerSelectStyles = StyleSheet.create({
+    inputIOS: {
+      fontSize: 16,
+      paddingVertical: 12,
+      paddingHorizontal: 10,
+      borderWidth: 1,
+      borderColor: colors.white,
+      borderRadius: 4,
+      color: colors.white,
+    },
+    inputAndroid: {
+      fontSize: 16,
+      paddingVertical: 8,
+      paddingHorizontal: 10,
+      borderWidth: 0.5,
+      borderColor: colors.white,
+      borderRadius: 8,
+      color: colors.white,
+    },
+  });
+
   return (
     <SafeAreaView
       style={[
@@ -39,35 +60,30 @@ export const Main = () => {
           <SplashScreen onAfterReady={() => setShowSplash(false)} />
         </Portal>
       )}
-      <DropDownPicker
-        activeLabelStyle={{ color: colors.primary }}
-        labelStyle={{ color: colors.gray }}
-        selectedLabelStyle={{ color: colors.primary }}
-        items={[
-          {
-            label: t('languages.english'),
-            value: 'en',
-          },
-          {
-            label: t('languages.spanish'),
-            value: 'es',
-          },
-        ]}
-        defaultValue={i18n.language}
-        containerStyle={{
-          height: 40,
-          width: '30%',
+      <View
+        style={{
           position: 'absolute',
-          top: '6%',
-          alignSelf: 'flex-end',
-          right: '8%',
-        }}
-        style={{ paddingLeft: 4 }}
-        itemStyle={{
-          justifyContent: 'flex-start',
-        }}
-        onChangeItem={(item) => i18n.changeLanguage(item.value)}
-      />
+          top: 60,
+          right: 20,
+        }}>
+        <RNPickerSelect
+          fixAndroidTouchableBug
+          style={pickerSelectStyles}
+          value={i18n.language}
+          onValueChange={(value) => i18n.changeLanguage(value)}
+          items={[
+            {
+              label: t('languages.english'),
+              value: 'en',
+            },
+            {
+              label: t('languages.spanish'),
+              value: 'es',
+            },
+          ]}
+        />
+      </View>
+
       <Text
         text="welcome"
         style={{
@@ -85,8 +101,8 @@ export const Main = () => {
       <View style={[margins.mt8]}>
         <Button
           onPress={() => {
-            dispatch(selectGame({ game: 'Jota' }));
-            navigation.navigate('GameConfig', { game: 'Jota' });
+            dispatch(selectGame({ game: 'JotaGame' }));
+            navigation.navigate('GameConfig', { game: 'JotaGame' });
           }}>
           <Text
             text="j"
@@ -99,8 +115,8 @@ export const Main = () => {
         <Button
           style={[margins.mt8, paddings.px6]}
           onPress={() => {
-            dispatch(selectGame({ game: 'Bus' }));
-            navigation.navigate('GameConfig', { game: 'Bus' });
+            dispatch(selectGame({ game: 'BusGame' }));
+            navigation.navigate('GameConfig', { game: 'BusGame' });
           }}>
           <Text
             text="bus"

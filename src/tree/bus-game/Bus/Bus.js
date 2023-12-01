@@ -11,7 +11,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { FloatingBar, FloatingTopBar } from '../../../ui/atoms/FloatingBar';
 import { PlayersHands } from './PlayersHands';
-import { BusDisplay } from './BusDisplay';
+import { Display } from './Display';
 
 import { Text } from '../../../ui/atoms/Text';
 import { RoundButton } from '../../../ui/atoms/RoundButton/RoundButton';
@@ -108,7 +108,7 @@ export const Bus = () => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <BusDisplay />
+      <Display />
 
       <Portal>
         <Modalize ref={modalizeHands} adjustToContentHeight={true}>

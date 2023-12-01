@@ -60,12 +60,12 @@ export const GameConfig = () => {
 
   function continueToGame() {
     closePlayersNames();
-    if (game === 'Bus') {
+    if (game === 'BusGame') {
       dispatch(setNumberOfJokersAndDecks({ decks: decks, jokers: jokers }));
-      navigation.navigate('Bus');
+      navigation.navigate('BusGame');
     } else {
       dispatch(startJotaGame());
-      navigation.navigate('Jota');
+      navigation.navigate('JotaGame');
     }
   }
 
@@ -90,7 +90,7 @@ export const GameConfig = () => {
 
       <View style={[margins.mx6]}>
         <Text
-          text={game === 'Jota' ? 'j' : 'bus'}
+          text={game === 'JotaGame' ? 'j' : 'bus'}
           style={{ textAlign: 'center', fontSize: 26, fontWeight: 'bold' }}
         />
 
@@ -112,7 +112,7 @@ export const GameConfig = () => {
           </View>
         </View>
       </View>
-      {game === 'Bus' && (
+      {game === 'BusGame' && (
         <View>
           <View style={[margins.mt8]}>
             <Text

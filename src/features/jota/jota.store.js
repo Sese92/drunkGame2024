@@ -13,24 +13,30 @@ export const initialState = {
   firstRound: true,
 };
 
+const extraReducers = createExtraReducers();
+
 const jotaSlice = createSlice({
   name: 'jota',
   initialState,
-  extraReducers: {
-    [START_THE_GAME]: (state) => {
+  extraReducers,
+});
+
+function createExtraReducers() {
+  return (builder) => {
+    builder.addCase(START_THE_GAME, (state) => {
       return {
         ...state,
         firstRound: true,
       };
-    },
-    [FINISH_FIRST_ROUND]: (state) => {
+    });
+    builder.addCase(FINISH_FIRST_ROUND, (state) => {
       return {
         ...state,
         firstRound: false,
       };
-    },
-  },
-});
+    });
+  };
+}
 
 const selectRoot = (state) => state.jota;
 

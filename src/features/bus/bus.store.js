@@ -26,47 +26,53 @@ export const initialState = {
   busCards: [],
 };
 
+const extraReducers = createExtraReducers();
+
 const busSlice = createSlice({
   name: 'bus',
   initialState,
-  extraReducers: {
-    [SET_NUMBER_DECKS_JOKERS]: (state, action) => {
+  extraReducers,
+});
+
+function createExtraReducers() {
+  return (builder) => {
+    builder.addCase(SET_NUMBER_DECKS_JOKERS, (state, action) => {
       return {
         ...state,
         cards: buildDeck(action.meta.decks, action.meta.jokers),
         jokers: action.meta.jokers,
         decks: action.meta.decks,
       };
-    },
-    [SET_NUMBER_ROWS]: (state, action) => {
+    });
+    builder.addCase(SET_NUMBER_ROWS, (state, action) => {
       return {
         ...state,
         rows: action.meta.rows,
         busCards: Array(action.meta.rows * 2 + 1).fill(0),
       };
-    },
-    [REMOVE_CARD]: (state, action) => {
+    });
+    builder.addCase(REMOVE_CARD, (state, action) => {
       return {
         ...state,
         cards: removeCard(state.cards.slice(), action.meta.card, state.jokers),
       };
-    },
-    [FLIP_CARD]: (state, action) => {
+    });
+    builder.addCase(FLIP_CARD, (state, action) => {
       return {
         ...state,
         cards: removeCard(state.cards.slice(), action.meta.card),
         busCards: setBusCard(state.busCards.slice(), action.meta.card),
       };
-    },
-    [FINAL_ROUND]: (state) => {
+    });
+    builder.addCase(FINAL_ROUND, (state) => {
       return {
         ...state,
         cards: buildDeck(state.decks, state.jokers),
         busCards: [],
       };
-    },
-  },
-});
+    });
+  };
+}
 
 const selectRoot = (state) => state.bus;
 

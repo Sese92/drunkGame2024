@@ -8,7 +8,7 @@ import { Text } from '../../../ui/atoms/Text';
 import { SmallCard } from '../../../ui/atoms/Card';
 import { margins } from '../../../ui/style/spacing';
 
-export const BusDisplay = () => {
+export const Display = () => {
   const busCards = useSelector(selectBusCards);
 
   return (

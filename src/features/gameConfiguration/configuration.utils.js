@@ -1,10 +1,10 @@
 export function setPlayers(number, game, playerName) {
   const arrayOfPlayers = [];
-  if (game === 'Jota') {
+  if (game === 'JotaGame') {
     for (let i = 0; i < number; i++) {
       arrayOfPlayers.push({ name: playerName + ' ' + (i + 1), jota: false });
     }
-  } else if (game === 'Bus') {
+  } else if (game === 'BusGame') {
     for (let i = 0; i < number; i++) {
       arrayOfPlayers.push({ name: playerName + ' ' + (i + 1), hand: [] });
     }

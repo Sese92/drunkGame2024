@@ -1,37 +1,28 @@
-import React, { useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { SafeAreaView, View, Text as RNText } from 'react-native';
-import { useTheme, useNavigation } from '@react-navigation/native';
-import { useTranslation } from 'react-i18next';
+import { useNavigation, useTheme } from '@react-navigation/native';
 
-import {
-  clearPlayerHand,
-  removeCard,
-  setPlayerHand,
-  removePlayer,
-  finalRound,
-  setNumberOfJokersAndDecks,
-} from '../../../services/bus/bus.service';
-import {
-  setTurn,
-  setNames,
-  setNumberOfPlayers,
-} from '../../../services/game/game.service';
+import { Portal } from 'react-native-portalize';
+import { Modalize } from 'react-native-modalize';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import { RowsModal } from './RowsModal';
+import { setTurn } from '../../../services/game/game.service';
+import { removeCard, setPlayerHand } from '../../../services/bus/bus.service';
 import {
-  selectTurn,
   selectPlayers,
-  selectInitialPlayers,
+  selectTurn,
 } from '../../../features/gameConfiguration/configuration.store';
-import {
-  selectCard,
-  selectNumberOfCards,
-  selectDecks,
-  selectJokers,
-} from '../../../features/bus/bus.store';
+import { selectCard } from '../../../features/bus/bus.store';
+
 import { Text } from '../../../ui/atoms/Text';
 import { Button } from '../../../ui/atoms/Button';
 import { Card, SmallCard } from '../../../ui/atoms/Card';
+import { FloatingTopBar } from '../../../ui/atoms/FloatingBar';
+import { RoundButton } from '../../../ui/atoms/RoundButton';
+import { PlayersHands } from '../Bus/PlayersHands';
+
 import { flex } from '../../../ui/style/layout';
 import { margins, paddings } from '../../../ui/style/spacing';
 
@@ -43,84 +34,85 @@ import {
   middleClicked,
 } from '../bus.utils';
 
-export const FinalRound = () => {
+export const Election = () => {
   const navigation = useNavigation();
+  const modalizeRef = useRef(null);
 
   const { colors } = useTheme();
   const dispatch = useDispatch();
-  const { t } = useTranslation();
 
   const card = useSelector(selectCard);
   const players = useSelector(selectPlayers);
   const turn = useSelector(selectTurn);
-  const initialPlayers = useSelector(selectInitialPlayers);
-  const decks = useSelector(selectDecks);
-  const jokers = useSelector(selectJokers);
 
-  const numberOfCards = useSelector(selectNumberOfCards);
   const [flipCard, saveFlipCard] = useState(false);
   const [buttonClicked, saveButtonClicked] = useState('');
 
+  const modalizeHands = useRef(null);
+
   useEffect(() => {
-    if (players.length > 0) {
-      dispatch(setTurn({ turn: 0 }));
-      saveFlipCard(false);
-    }
+    dispatch(setTurn({ turn: 0 }));
+    saveFlipCard(false);
   }, []);
 
-  var success =
+  const onOpenHands = () => {
+    modalizeHands.current?.open();
+  };
+
+  var successSides =
     players.length > 0 &&
     ((buttonClicked === 'Left' && leftClicked(players[turn].hand, card)) ||
-      (buttonClicked === 'Middle' && middleClicked(players[turn].hand, card)) ||
       (buttonClicked === 'Right' && rightClicked(players[turn].hand, card)));
 
-  function nextCard() {
-    saveFlipCard(false);
-    if (numberOfCards === 1) {
-      dispatch(finalRound());
-    }
-    if (success) {
-      if (players[turn].hand.length < 3) {
-        dispatch(setPlayerHand({ player: players[turn], card: card })); // Add to player hand
-      }
-      dispatch(removeCard({ card: card })); // Remove from stack
-      if (players[turn].hand.length === 3) {
-        let playerToRemove = players[turn];
-        if (turn === players.length - 1) {
-          dispatch(setTurn({ turn: 0 }));
-        }
-        dispatch(removePlayer({ player: playerToRemove })); // Winner, remove from stack
+  var successMiddle =
+    players.length > 0 &&
+    buttonClicked === 'Middle' &&
+    middleClicked(players[turn].hand, card);
+
+  const onOpen = () => {
+    modalizeRef.current?.open();
+  };
+
+  const onClose = () => {
+    modalizeRef.current?.close();
+  };
+
+  function nextTurn() {
+    if (turn < players.length - 1) {
+      saveFlipCard(false);
+      dispatch(setPlayerHand({ player: players[turn], card: card }));
+      dispatch(removeCard({ card: card }));
+      if (card.type !== 'Joker') {
+        dispatch(setTurn({ turn: turn + 1 }));
       }
     } else {
-      dispatch(removeCard({ card: card })); // Remove from stack
-      if (card.type !== 'Joker') {
-        dispatch(clearPlayerHand({ player: players[turn] }));
-        if (turn < players.length - 1) {
-          dispatch(setTurn({ turn: turn + 1 }));
+      if (players[players.length - 1].hand.length === 3) {
+        if (card.type !== 'Joker') {
+          saveFlipCard(false);
+          dispatch(setPlayerHand({ player: players[turn], card: card }));
+          dispatch(removeCard({ card: card }));
+          onOpen();
         } else {
+          saveFlipCard(false);
+          dispatch(removeCard({ card: card }));
+        }
+      } else if (players[players.length - 1].hand.length < 3) {
+        saveFlipCard(false);
+        dispatch(setPlayerHand({ player: players[turn], card: card }));
+        dispatch(removeCard({ card: card }));
+        if (card.type !== 'Joker') {
           dispatch(setTurn({ turn: 0 }));
         }
+      } else {
+        saveFlipCard(false);
+        onOpen();
       }
     }
-  }
-
-  function playAgain() {
-    dispatch(
-      setNumberOfPlayers({
-        numberOfPlayers: initialPlayers.length,
-        playersName: t('game_configuration.player'),
-      })
-    );
-    let names = [];
-    initialPlayers.map((player) => names.push(player.name));
-    dispatch(setNames({ names: names }));
-    dispatch(setNumberOfJokersAndDecks({ decks: decks, jokers: jokers }));
-    navigation.navigate('BusElection');
   }
 
   return (
     <View style={[flex.on]}>
-      {players.length > 0 ? (
+      {players.length > 0 && (
         <SafeAreaView
           style={[
             flex.on,
@@ -158,11 +150,9 @@ export const FinalRound = () => {
                 )
             )}
           </View>
-          <Card
-            styles={{ height: '55%', width: '80%' }}
-            flip={flipCard}
-            card={flipCard ? card : null}
-          />
+
+          <Card flip={flipCard} card={flipCard ? card : null} />
+
           {!flipCard && players[players.length - 1].hand.length < 4 ? (
             <View
               style={[
@@ -237,66 +227,56 @@ export const FinalRound = () => {
                   justifyContent: 'center',
                 },
               ]}>
-              <Button style={[paddings.px3]} onPress={() => nextCard()}>
-                <Text
-                  text={
-                    success
-                      ? 'continue'
-                      : card.type === 'Joker'
-                      ? 'bus_game.shot'
-                      : 'bus_game.drink'
-                  }
-                  style={{
-                    fontSize: 20,
-                    fontWeight: 'bold',
-                    textAlign: 'center',
-                  }}
-                />
-              </Button>
+              {players[players.length - 1].hand.length < 4 ? (
+                <Button style={[paddings.px5]} onPress={() => nextTurn()}>
+                  <Text
+                    text={
+                      successSides
+                        ? 'bus_game.send'
+                        : successMiddle
+                        ? 'bus_game.all_drink'
+                        : card.type === 'Joker'
+                        ? 'bus_game.shot'
+                        : 'bus_game.drink'
+                    }
+                    style={{
+                      fontSize: 20,
+                      fontWeight: 'bold',
+                      textAlign: 'center',
+                    }}
+                  />
+                </Button>
+              ) : (
+                <Button style={[paddings.px5]} onPress={() => onOpen()}>
+                  <Text
+                    text="bus_game.next_round"
+                    style={{
+                      fontSize: 20,
+                      fontWeight: 'bold',
+                      textAlign: 'center',
+                    }}
+                  />
+                </Button>
+              )}
             </View>
           )}
-          {numberOfCards === 1 && (
-            <Text
-              text="bus_game.last_card"
-              style={{ marginTop: 20, fontWeight: 'bold', fontSize: 16 }}
-            />
-          )}
-        </SafeAreaView>
-      ) : (
-        <SafeAreaView
-          style={[
-            flex.on,
-            flex.centerContent,
-            { backgroundColor: colors.tertiary },
-          ]}>
-          <Text
-            text="bus_game.game_finished"
-            style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 50 }}
-          />
-          <Button
-            style={[paddings.px3, margins.mb6]}
-            onPress={() => playAgain()}>
-            <Text
-              text="play_again"
-              style={{
-                fontSize: 20,
-                fontWeight: 'bold',
-                textAlign: 'center',
-              }}
-            />
-          </Button>
-          <Button
-            style={[paddings.px3, margins.mt6]}
-            onPress={() => navigation.navigate('Main')}>
-            <Text
-              text="main_menu"
-              style={{
-                fontSize: 20,
-                fontWeight: 'bold',
-                textAlign: 'center',
-              }}
-            />
-          </Button>
+          <Portal>
+            <Modalize ref={modalizeRef} adjustToContentHeight={true}>
+              <RowsModal navigation={navigation} onClose={() => onClose()} />
+            </Modalize>
+          </Portal>
+          <FloatingTopBar style={{ left: 'auto' }}>
+            <View style={[margins.mx4]}>
+              <RoundButton onPress={() => onOpenHands()}>
+                <Icon name="cards" size={23} color={colors.info} />
+              </RoundButton>
+            </View>
+          </FloatingTopBar>
+          <Portal>
+            <Modalize ref={modalizeHands} adjustToContentHeight={true}>
+              <PlayersHands />
+            </Modalize>
+          </Portal>
         </SafeAreaView>
       )}
     </View>

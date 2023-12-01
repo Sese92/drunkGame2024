@@ -32,17 +32,23 @@ export const initialState = {
   initialPlayers: [],
 };
 
+const extraReducers = createExtraReducers();
+
 const configurationSlice = createSlice({
   name: 'configuration',
   initialState,
-  extraReducers: {
-    [SELECT_GAME]: (state, action) => {
+  extraReducers,
+});
+
+function createExtraReducers() {
+  return (builder) => {
+    builder.addCase(SELECT_GAME, (state, action) => {
       return {
         ...state,
         game: action.meta.game,
       };
-    },
-    [SET_NUMBER_PLAYERS]: (state, action) => {
+    });
+    builder.addCase(SET_NUMBER_PLAYERS, (state, action) => {
       return {
         ...state,
         players: setPlayers(
@@ -56,8 +62,8 @@ const configurationSlice = createSlice({
           action.meta.playersName
         ),
       };
-    },
-    [SET_NAMES]: (state, action) => {
+    });
+    builder.addCase(SET_NAMES, (state, action) => {
       return {
         ...state,
         players: setPlayersNames(state.players, action.meta.names),
@@ -66,29 +72,28 @@ const configurationSlice = createSlice({
           action.meta.names
         ),
       };
-    },
-    [SET_TURN]: (state, action) => {
+    });
+    builder.addCase(SET_TURN, (state, action) => {
       return {
         ...state,
         turn: action.meta.turn,
       };
-    },
-
-    // Jota
-    [SET_PLAYER_AS_JOTA]: (state, action) => {
+    });
+    // JOTA
+    builder.addCase(SET_PLAYER_AS_JOTA, (state, action) => {
       return {
         ...state,
         players: setJota(state.players, action.meta.player),
       };
-    },
-    // Bus
-    [SET_PLAYER_HAND]: (state, action) => {
+    });
+    // BUS
+    builder.addCase(SET_PLAYER_HAND, (state, action) => {
       return {
         ...state,
         players: setHand(state.players, action.meta.player, action.meta.card),
       };
-    },
-    [REMOVE_CARD_FROM_HAND]: (state, action) => {
+    });
+    builder.addCase(REMOVE_CARD_FROM_HAND, (state, action) => {
       return {
         ...state,
         players: removeFromHand(
@@ -97,29 +102,29 @@ const configurationSlice = createSlice({
           action.meta.card
         ),
       };
-    },
-    [RENEW_PLAYERS]: (state) => {
+    });
+    builder.addCase(RENEW_PLAYERS, (state) => {
       return {
         ...state,
         players: selectLastPlayers(state.players),
       };
-    },
-    [CLEAR_PLAYER_HAND]: (state, action) => {
+    });
+    builder.addCase(CLEAR_PLAYER_HAND, (state, action) => {
       return {
         ...state,
         players: clearHand(state.players.slice(), action.meta.player),
       };
-    },
-    [REMOVE_PLAYER]: (state, action) => {
+    });
+    builder.addCase(REMOVE_PLAYER, (state, action) => {
       return {
         ...state,
         players: state.players.filter(
           (player) => player.name !== action.meta.player.name
         ),
       };
-    },
-  },
-});
+    });
+  };
+}
 
 const selectRoot = (state) => state.configuration;
 
