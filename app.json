@@ -1,22 +1,19 @@
 {
   "expo": {
-    "name": "drunkGame2024",
+    "name": "Drunk Game",
     "slug": "drunkGame2024",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#023047"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.josed92.drunkGame2024"
+      "requireFullScreen": true
     },
     "android": {
       "adaptiveIcon": {
@@ -32,6 +29,7 @@
       "eas": {
         "projectId": "7999bfde-09ea-4339-a663-cb434ba89eb6"
       }
-    }
+    },
+    "owner": "josed92"
   }
 }
