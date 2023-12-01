@@ -67,6 +67,8 @@ export const Main = () => {
           right: 20,
         }}>
         <RNPickerSelect
+          placeholder={{}}
+          useNativeAndroidPickerStyle={false}
           fixAndroidTouchableBug
           style={pickerSelectStyles}
           value={i18n.language}
