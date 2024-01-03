@@ -8,6 +8,10 @@ import { useTranslation } from 'react-i18next';
 
 import { useNavigation, useTheme } from '@react-navigation/native';
 
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+
+import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
+
 import { selectGame } from '../services/game/game.service';
 
 import { Button } from '../ui/atoms/Button';
@@ -25,7 +29,7 @@ export const Main = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
-  const [showSplash, setShowSplash] = useState(false);
+  const [showSplash, setShowSplash] = useState(true);
 
   const pickerSelectStyles = StyleSheet.create({
     inputIOS: {
@@ -36,6 +40,7 @@ export const Main = () => {
       borderColor: colors.white,
       borderRadius: 4,
       color: colors.white,
+      paddingRight: 30,
     },
     inputAndroid: {
       fontSize: 16,
@@ -45,6 +50,10 @@ export const Main = () => {
       borderColor: colors.white,
       borderRadius: 8,
       color: colors.white,
+    },
+    iconContainer: {
+      top: 16,
+      right: 10,
     },
   });
 
@@ -67,6 +76,12 @@ export const Main = () => {
           right: 20,
         }}>
         <RNPickerSelect
+          Icon={() => {
+            return (
+              <FontAwesomeIcon size={12} color="white" icon={faChevronDown} />
+            );
+          }}
+          touchableWrapperProps={{ activeOpacity: 0.65 }}
           placeholder={{}}
           useNativeAndroidPickerStyle={false}
           fixAndroidTouchableBug
