@@ -5,11 +5,14 @@ import {
   View,
   Text as RNText,
   TouchableWithoutFeedback,
+  Alert,
 } from 'react-native';
-import { useTheme } from '@react-navigation/native';
+import { useNavigation, useTheme } from '@react-navigation/native';
 
 import { Portal } from 'react-native-portalize';
 import { Modalize } from 'react-native-modalize';
+
+import { useTranslation } from 'react-i18next';
 
 import { setTurn } from '../../services/game/game.service';
 import {
@@ -30,10 +33,13 @@ import {
   setPlayerAsJota,
   finishFirstRound,
 } from '../../services/jota/jota.service';
+import { ModifyPlayers } from '../game-config/ModifyPlayers';
 
 export const Jota = () => {
   const { colors } = useTheme();
   const dispatch = useDispatch();
+  const navigation = useNavigation();
+  const { t } = useTranslation();
 
   const players = useSelector(selectPlayers);
   const turn = useSelector(selectTurn);
@@ -43,10 +49,26 @@ export const Jota = () => {
   const [diceSelected, saveDiceSelected] = useState(null);
 
   const modalizeJota = useRef(null);
+  const modalizePlayers = useRef(null);
 
   useEffect(() => {
     dispatch(setTurn({ turn: 0 }));
   }, []);
+
+  useEffect(() => {
+    navigation.addListener('beforeRemove', (e) => {
+      e.preventDefault();
+
+      Alert.alert(t('close_game'), t('sure'), [
+        { text: t('no'), style: 'cancel', onPress: () => {} },
+        {
+          text: t('yes'),
+          style: 'destructive',
+          onPress: () => navigation.dispatch(e.data.action),
+        },
+      ]);
+    });
+  }, [navigation]);
 
   function setNextTurn() {
     if (diceSelected.number === 'J' && firstRound) {
@@ -83,8 +105,16 @@ export const Jota = () => {
     modalizeJota.current?.open();
   };
 
+  const onOpenAddPlayers = () => {
+    modalizePlayers.current?.open();
+  };
+
+  const onCloseAddPlayers = () => {
+    modalizePlayers.current?.close();
+  };
+
   return (
-    <SafeAreaView style={[flex.on, { backgroundColor: colors.tertiary }]}>
+    <SafeAreaView style={[flex.on, { backgroundColor: colors.secondary }]}>
       {firstRound && (
         <Text
           text="j_game.first_round"
@@ -92,8 +122,31 @@ export const Jota = () => {
         />
       )}
       {!firstRound && (
-        <FloatingTopBar style={{ left: 'auto' }}>
-          <View style={[margins.mx4]}>
+        <FloatingTopBar>
+          <View
+            style={[
+              margins.mx4,
+              {
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+              },
+            ]}>
+            <RoundButton
+              style={{
+                backgroundColor: colors.info,
+                borderColor: colors.black,
+                borderWidth: 1.5,
+              }}
+              onPress={() => onOpenAddPlayers()}>
+              <Text
+                text="+"
+                style={{
+                  color: colors.black,
+                  fontWeight: 'bold',
+                  fontSize: 20,
+                }}
+              />
+            </RoundButton>
             <RoundButton onPress={() => onOpenPlayers()}>
               <Text
                 text="J"
@@ -126,6 +179,11 @@ export const Jota = () => {
           </View>
         </Modalize>
       </Portal>
+      <Portal>
+        <Modalize ref={modalizePlayers} adjustToContentHeight={true}>
+          <ModifyPlayers continueToGame={() => onCloseAddPlayers()} />
+        </Modalize>
+      </Portal>
       {resultsScreen ? (
         <View style={[flex.centerContent]}>
           <View>
@@ -152,7 +210,7 @@ export const Jota = () => {
           {!firstRound && (
             <Text
               text={'j_game.rules.' + diceSelected.rule}
-              style={[margins.mt5, { fontSize: 30 }]}
+              style={[margins.mt5, { fontSize: 30, textAlign: 'center' }]}
             />
           )}
         </View>

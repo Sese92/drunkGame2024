@@ -6,7 +6,7 @@ import { Host } from 'react-native-portalize';
 
 import { Main } from './main';
 import { Jota } from './jota/Jota';
-import { GameConfig } from './game-config/GameConfig';
+import { BusConfig } from './game-config/BusConfig';
 import { BusTree } from './bus-game/bus.navigation';
 
 const Stack = createStackNavigator();
@@ -21,7 +21,7 @@ export function Tree() {
         }}
         initialRouteName="Main">
         <Stack.Screen name="Main" component={Main} />
-        <Stack.Screen name="GameConfig" component={GameConfig} />
+        <Stack.Screen name="BusConfig" component={BusConfig} />
         <Stack.Screen name="JotaGame" component={Jota} />
         <Stack.Screen name="BusGame" component={BusTree} />
       </Stack.Navigator>

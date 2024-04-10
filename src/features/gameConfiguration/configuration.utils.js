@@ -1,26 +1,22 @@
-export function setPlayers(number, game, playerName) {
+export function setPlayers(players, game) {
+  console.log(players);
+  const string = JSON.stringify(players);
+  const goodPlayers = JSON.parse(string);
+
   const arrayOfPlayers = [];
   if (game === 'JotaGame') {
-    for (let i = 0; i < number; i++) {
-      arrayOfPlayers.push({ name: playerName + ' ' + (i + 1), jota: false });
+    for (let i = 0; i < goodPlayers.length; i++) {
+      arrayOfPlayers.push({
+        name: goodPlayers[i].name,
+        jota: goodPlayers[i].jota ?? false,
+      });
     }
   } else if (game === 'BusGame') {
-    for (let i = 0; i < number; i++) {
-      arrayOfPlayers.push({ name: playerName + ' ' + (i + 1), hand: [] });
+    for (let i = 0; i < goodPlayers.length; i++) {
+      arrayOfPlayers.push({ name: goodPlayers[i].name, hand: [] });
     }
   }
   return arrayOfPlayers;
-}
-
-export function setPlayersNames(players, names) {
-  const string = JSON.stringify(players);
-  const goodPlayers = JSON.parse(string);
-  for (let i = 0; i < goodPlayers.length; i++) {
-    if (names[i] !== '') {
-      goodPlayers[i].name = names[i];
-    }
-  }
-  return goodPlayers;
 }
 
 export function selectLastPlayers(players) {

@@ -3,8 +3,7 @@ import { createSelector } from 'reselect';
 
 import {
   SELECT_GAME,
-  SET_NUMBER_PLAYERS,
-  SET_NAMES,
+  SET_PLAYERS,
   SET_TURN,
   RENEW_PLAYERS,
 } from '../../services/game/game.service';
@@ -18,13 +17,10 @@ import {
 
 import { SET_PLAYER_AS_JOTA } from '../../services/jota/jota.service';
 
-import {
-  setPlayers,
-  setPlayersNames,
-  selectLastPlayers,
-} from './configuration.utils';
+import { setPlayers, selectLastPlayers } from './configuration.utils';
 import { setHand, removeFromHand, clearHand } from '../bus/bus.utils';
 import { setJota } from '../jota/jota.utils';
+
 export const initialState = {
   game: '',
   players: [],
@@ -48,29 +44,11 @@ function createExtraReducers() {
         game: action.meta.game,
       };
     });
-    builder.addCase(SET_NUMBER_PLAYERS, (state, action) => {
+    builder.addCase(SET_PLAYERS, (state, action) => {
       return {
         ...state,
-        players: setPlayers(
-          action.meta.numberOfPlayers,
-          state.game,
-          action.meta.playersName
-        ),
-        initialPlayers: setPlayers(
-          action.meta.numberOfPlayers,
-          state.game,
-          action.meta.playersName
-        ),
-      };
-    });
-    builder.addCase(SET_NAMES, (state, action) => {
-      return {
-        ...state,
-        players: setPlayersNames(state.players, action.meta.names),
-        initialPlayers: setPlayersNames(
-          state.initialPlayers,
-          action.meta.names
-        ),
+        players: setPlayers(action.meta.players, state.game),
+        initialPlayers: setPlayers(action.meta.players, state.game),
       };
     });
     builder.addCase(SET_TURN, (state, action) => {
@@ -128,7 +106,7 @@ function createExtraReducers() {
 
 const selectRoot = (state) => state.configuration;
 
-const selectGame = createSelector(
+const selectSelectedGame = createSelector(
   selectRoot,
   (configuration) => configuration.game
 );
@@ -158,7 +136,7 @@ const selectFinalPlayers = createSelector(selectRoot, (configuration) =>
 );
 
 export {
-  selectGame,
+  selectSelectedGame,
   selectPlayers,
   selectNumberOfPlayers,
   selectTurn,

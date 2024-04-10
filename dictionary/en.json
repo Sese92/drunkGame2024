@@ -6,8 +6,12 @@
     "bus": "Bus game",
     "continue": "Continue",
     "cancel": "Cancel",
+    "yes": "Yes",
+    "no": "No",
     "play_again": "Play again",
     "main_menu": "Go to main menu",
+    "close_game": "You are going to finish this game",
+    "sure": "Are you sure?",
     "languages": {
       "english": "English",
       "spanish": "Spanish",
@@ -15,16 +19,22 @@
     },
     "game_configuration": {
       "nb_players": "Number of players",
+      "nb_new_players": "Number of new players",
       "nb_jokers": "Number of jokers",
       "nb_decks": "Number of decks",
-      "players": "Players",
+      "players": "¿Who's going to play?",
       "player": "Player",
-      "play": "Play now!"
+      "play": "Play now!",
+      "next": "Next",
+      "remove": "Delete player",
+      "remove_player": "Are you sure you want to delete {{playerName}} ?"
     },
     "j_game": {
       "first_round": "First round",
       "players": "J players",
       "roll": "Roll it!",
+      "addPlayers": "Add players",
+      "morePlayers": "New players will play as J",
       "rules": {
         "new_rule": "Add a new rule",
         "left": "The one on the left drink",

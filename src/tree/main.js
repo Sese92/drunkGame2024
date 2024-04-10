@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Portal } from 'react-native-portalize';
 
 import { SafeAreaView, StyleSheet, View } from 'react-native';
@@ -12,6 +12,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons';
 
+import { Modalize } from 'react-native-modalize';
+
 import { selectGame } from '../services/game/game.service';
 
 import { Button } from '../ui/atoms/Button';
@@ -22,6 +24,9 @@ import { flex } from '../ui/style/layout';
 import { margins, paddings } from '../ui/style/spacing';
 
 import i18n from '../i18n';
+import { Players } from './game-config/Players';
+import { selectSelectedGame } from '../features/gameConfiguration/configuration.store';
+import { startJotaGame } from '../services/jota/jota.service';
 
 export const Main = () => {
   const { colors } = useTheme();
@@ -29,7 +34,10 @@ export const Main = () => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
+  const game = useSelector(selectSelectedGame);
   const [showSplash, setShowSplash] = useState(true);
+
+  const modalizeNames = useRef(null);
 
   const pickerSelectStyles = StyleSheet.create({
     inputIOS: {
@@ -56,6 +64,24 @@ export const Main = () => {
       right: 10,
     },
   });
+
+  const openPlayersNames = () => {
+    modalizeNames.current?.open();
+  };
+
+  const closePlayersNames = () => {
+    modalizeNames.current?.close();
+  };
+
+  function continueToGame() {
+    closePlayersNames();
+    if (game === 'BusGame') {
+      navigation.navigate('BusConfig');
+    } else {
+      dispatch(startJotaGame());
+      navigation.navigate('JotaGame');
+    }
+  }
 
   return (
     <SafeAreaView
@@ -119,7 +145,7 @@ export const Main = () => {
         <Button
           onPress={() => {
             dispatch(selectGame({ game: 'JotaGame' }));
-            navigation.navigate('GameConfig', { game: 'JotaGame' });
+            openPlayersNames();
           }}>
           <Text
             text="j"
@@ -133,7 +159,7 @@ export const Main = () => {
           style={[margins.mt8, paddings.px6]}
           onPress={() => {
             dispatch(selectGame({ game: 'BusGame' }));
-            navigation.navigate('GameConfig', { game: 'BusGame' });
+            openPlayersNames();
           }}>
           <Text
             text="bus"
@@ -144,6 +170,11 @@ export const Main = () => {
           />
         </Button>
       </View>
+      <Portal>
+        <Modalize ref={modalizeNames} adjustToContentHeight={true}>
+          <Players continueToGame={() => continueToGame()} />
+        </Modalize>
+      </Portal>
     </SafeAreaView>
   );
 };

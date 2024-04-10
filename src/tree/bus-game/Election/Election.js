@@ -1,11 +1,13 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { SafeAreaView, View, Text as RNText } from 'react-native';
+import { SafeAreaView, View, Text as RNText, Alert } from 'react-native';
 import { useNavigation, useTheme } from '@react-navigation/native';
 
 import { Portal } from 'react-native-portalize';
 import { Modalize } from 'react-native-modalize';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import { useTranslation } from 'react-i18next';
 
 import { RowsModal } from './RowsModal';
 import { setTurn } from '../../../services/game/game.service';
@@ -37,6 +39,7 @@ import {
 export const Election = () => {
   const navigation = useNavigation();
   const modalizeRef = useRef(null);
+  const { t } = useTranslation();
 
   const { colors } = useTheme();
   const dispatch = useDispatch();
@@ -49,6 +52,21 @@ export const Election = () => {
   const [buttonClicked, saveButtonClicked] = useState('');
 
   const modalizeHands = useRef(null);
+
+  useEffect(() => {
+    navigation.addListener('beforeRemove', (e) => {
+      e.preventDefault();
+
+      Alert.alert(t('close_game'), t('sure'), [
+        { text: t('no'), style: 'cancel', onPress: () => {} },
+        {
+          text: t('yes'),
+          style: 'destructive',
+          onPress: () => navigation.dispatch(e.data.action),
+        },
+      ]);
+    });
+  }, [navigation]);
 
   useEffect(() => {
     dispatch(setTurn({ turn: 0 }));
@@ -117,7 +135,7 @@ export const Election = () => {
           style={[
             flex.on,
             flex.centerContent,
-            { backgroundColor: colors.tertiary },
+            { backgroundColor: colors.secondary },
           ]}>
           <RNText
             style={[
@@ -234,10 +252,10 @@ export const Election = () => {
                       successSides
                         ? 'bus_game.send'
                         : successMiddle
-                        ? 'bus_game.all_drink'
-                        : card.type === 'Joker'
-                        ? 'bus_game.shot'
-                        : 'bus_game.drink'
+                          ? 'bus_game.all_drink'
+                          : card.type === 'Joker'
+                            ? 'bus_game.shot'
+                            : 'bus_game.drink'
                     }
                     style={{
                       fontSize: 20,

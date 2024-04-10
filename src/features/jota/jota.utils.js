@@ -1,7 +1,7 @@
 export const dice = [
   { number: 1, color: 'red', rule: 'new_rule' },
-  { number: 7, color: 'black', rule: 'left' },
-  { number: 8, color: 'red', rule: 'right' },
+  { number: 7, color: 'black', rule: 'right' },
+  { number: 8, color: 'red', rule: 'left' },
   { number: 'J', color: 'black', rule: 'j' },
   { number: 'Q', color: 'black', rule: 'q' },
   { number: 'K', color: 'red', rule: 'k' },

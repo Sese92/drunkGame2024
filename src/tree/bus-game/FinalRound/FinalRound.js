@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { SafeAreaView, View, Text as RNText } from 'react-native';
 import { useTheme, useNavigation } from '@react-navigation/native';
-import { useTranslation } from 'react-i18next';
 
 import {
   clearPlayerHand,
@@ -12,16 +11,11 @@ import {
   finalRound,
   setNumberOfJokersAndDecks,
 } from '../../../services/bus/bus.service';
-import {
-  setTurn,
-  setNames,
-  setNumberOfPlayers,
-} from '../../../services/game/game.service';
+import { setTurn } from '../../../services/game/game.service';
 
 import {
   selectTurn,
   selectPlayers,
-  selectInitialPlayers,
 } from '../../../features/gameConfiguration/configuration.store';
 import {
   selectCard,
@@ -48,12 +42,10 @@ export const FinalRound = () => {
 
   const { colors } = useTheme();
   const dispatch = useDispatch();
-  const { t } = useTranslation();
 
   const card = useSelector(selectCard);
   const players = useSelector(selectPlayers);
   const turn = useSelector(selectTurn);
-  const initialPlayers = useSelector(selectInitialPlayers);
   const decks = useSelector(selectDecks);
   const jokers = useSelector(selectJokers);
 
@@ -105,15 +97,6 @@ export const FinalRound = () => {
   }
 
   function playAgain() {
-    dispatch(
-      setNumberOfPlayers({
-        numberOfPlayers: initialPlayers.length,
-        playersName: t('game_configuration.player'),
-      })
-    );
-    let names = [];
-    initialPlayers.map((player) => names.push(player.name));
-    dispatch(setNames({ names: names }));
     dispatch(setNumberOfJokersAndDecks({ decks: decks, jokers: jokers }));
     navigation.navigate('Election');
   }
@@ -125,7 +108,7 @@ export const FinalRound = () => {
           style={[
             flex.on,
             flex.centerContent,
-            { backgroundColor: colors.tertiary },
+            { backgroundColor: colors.secondary },
           ]}>
           <RNText
             style={[
@@ -239,8 +222,8 @@ export const FinalRound = () => {
                     success
                       ? 'continue'
                       : card.type === 'Joker'
-                      ? 'bus_game.shot'
-                      : 'bus_game.drink'
+                        ? 'bus_game.shot'
+                        : 'bus_game.drink'
                   }
                   style={{
                     fontSize: 20,
@@ -263,7 +246,7 @@ export const FinalRound = () => {
           style={[
             flex.on,
             flex.centerContent,
-            { backgroundColor: colors.tertiary },
+            { backgroundColor: colors.secondary },
           ]}>
           <Text
             text="bus_game.game_finished"

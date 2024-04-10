@@ -6,8 +6,12 @@
     "bus": "Autobús",
     "continue": "Continuar",
     "cancel": "Cancelar",
+    "yes": "Si",
+    "no": "No",
     "play_again": "Jugar otra vez",
     "main_menu": "Volver al menú",
+    "close_game": "Vas a terminar esta partida",
+    "sure": "¿Estás seguro?",
     "languages": {
       "english": "Inglés",
       "spanish": "Español",
@@ -15,16 +19,22 @@
     },
     "game_configuration": {
       "nb_players": "Número de jugadores",
+      "nb_new_players": "Número de jugadores nuevos",
       "nb_jokers": "Número de comodines",
       "nb_decks": "Número de barajas",
-      "players": "Jugadores",
+      "players": "¿Quién va a jugar?",
       "player": "Jugador",
-      "play": "¡Jugar!"
+      "play": "¡Jugar!",
+      "next": "Siguiente",
+      "remove": "Borrar jugador",
+      "remove_player": "¿Estás seguro de borrar el jugador {{playerName}}?"
     },
     "j_game": {
       "first_round": "Primera ronda",
       "players": "Jotas",
       "roll": "¡Lanza el dado!",
+      "addPlayers": "Añadir jugadores",
+      "morePlayers": "Los jugadores que se unan ahora entrarán al juego siendo J",
       "rules": {
         "new_rule": "Añade una nueva norma",
         "left": "El jugador de tu izquierda bebe",
