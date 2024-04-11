@@ -13,7 +13,7 @@ import { selectPlayers } from '../../features/gameConfiguration/configuration.st
 import { setPlayers } from '../../services/game/game.service';
 import { IconDelete } from '../../ui/zicons/Delete';
 
-export const ModifyPlayers = ({ continueToGame }) => {
+export const ModifyPlayers = ({ continueToGame, game }) => {
   const [newPlayers, saveNewPlayers] = useState([]);
   const playersOnPlay = useSelector(selectPlayers);
 
@@ -26,8 +26,14 @@ export const ModifyPlayers = ({ continueToGame }) => {
 
   function play() {
     for (let j = 0; j < newPlayers.length; j++) {
-      newPlayers[j].jota = true;
+      if (game !== 'Bus') {
+        newPlayers[j].jota = true;
+      } else {
+        newPlayers[j].hand = [];
+      }
     }
+
+    console.log(playersOnPlay, newPlayers);
 
     dispatch(setPlayers({ players: [...playersOnPlay, ...newPlayers] }));
     continueToGame();
@@ -42,24 +48,25 @@ export const ModifyPlayers = ({ continueToGame }) => {
   }
 
   function deletePlayer(player) {
-    Alert.alert(
-      t('game_configuration.remove'),
-      t('game_configuration.remove_player', { playerName: player.name }),
-      [
-        { text: t('no'), style: 'cancel', onPress: () => {} },
-        {
-          text: t('yes'),
-          style: 'destructive',
-          onPress: () => {
-            let filter = playersOnPlay.filter(
-              (plyr) => plyr.name !== player.name
-            );
-            console.log(filter);
-            dispatch(setPlayers({ players: filter }));
+    if (playersOnPlay.length > 1) {
+      Alert.alert(
+        t('game_configuration.remove'),
+        t('game_configuration.remove_player', { playerName: player.name }),
+        [
+          { text: t('no'), style: 'cancel', onPress: () => {} },
+          {
+            text: t('yes'),
+            style: 'destructive',
+            onPress: () => {
+              let filter = playersOnPlay.filter(
+                (plyr) => plyr.name !== player.name
+              );
+              dispatch(setPlayers({ players: filter }));
+            },
           },
-        },
-      ]
-    );
+        ]
+      );
+    }
   }
 
   useEffect(() => {
@@ -73,7 +80,11 @@ export const ModifyPlayers = ({ continueToGame }) => {
   return (
     <View style={[margins.m6]}>
       <Text
-        text="game_configuration.nb_new_players"
+        text={
+          game === 'Bus'
+            ? 'bus_game.new_game_players'
+            : 'game_configuration.nb_new_players'
+        }
         style={{ textAlign: 'center', fontSize: 24, fontWeight: 'bold' }}>
         Players
       </Text>
@@ -87,10 +98,12 @@ export const ModifyPlayers = ({ continueToGame }) => {
           />
         </View>
       </View>
-      <Text
-        text="j_game.morePlayers"
-        style={[margins.my4, { textAlign: 'center', fontSize: 14 }]}
-      />
+      {game !== 'Bus' && (
+        <Text
+          text="j_game.morePlayers"
+          style={[margins.my4, { textAlign: 'center', fontSize: 14 }]}
+        />
+      )}
       <View style={[margins.mb6]}>
         {playersOnPlay.map((player, i) => (
           <View
@@ -143,7 +156,7 @@ export const ModifyPlayers = ({ continueToGame }) => {
       </View>
       <Button disabled={buttonDisabled} onPress={() => play()}>
         <Text
-          text="j_game.addPlayers"
+          text={game === 'Bus' ? 'continue' : 'j_game.addPlayers'}
           style={{ fontSize: 20, fontWeight: 'bold' }}
         />
       </Button>

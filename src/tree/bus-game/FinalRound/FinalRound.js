@@ -1,7 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { SafeAreaView, View, Text as RNText } from 'react-native';
+import { SafeAreaView, View, Text as RNText, Alert } from 'react-native';
 import { useTheme, useNavigation } from '@react-navigation/native';
+
+import { Portal } from 'react-native-portalize';
+
+import { Modalize } from 'react-native-modalize';
+
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import { useTranslation } from 'react-i18next';
 
 import {
   clearPlayerHand,
@@ -9,19 +17,17 @@ import {
   setPlayerHand,
   removePlayer,
   finalRound,
-  setNumberOfJokersAndDecks,
 } from '../../../services/bus/bus.service';
-import { setTurn } from '../../../services/game/game.service';
+import { setTurn, setPlayers } from '../../../services/game/game.service';
 
 import {
   selectTurn,
   selectPlayers,
+  selectInitialPlayers,
 } from '../../../features/gameConfiguration/configuration.store';
 import {
   selectCard,
   selectNumberOfCards,
-  selectDecks,
-  selectJokers,
 } from '../../../features/bus/bus.store';
 import { Text } from '../../../ui/atoms/Text';
 import { Button } from '../../../ui/atoms/Button';
@@ -37,8 +43,12 @@ import {
   middleClicked,
 } from '../bus.utils';
 
+import { ModifyPlayers } from '../../game-config/ModifyPlayers';
+import { FloatingTopBar } from '../../../ui/atoms/FloatingBar';
+
 export const FinalRound = () => {
   const navigation = useNavigation();
+  const { t } = useTranslation();
 
   const { colors } = useTheme();
   const dispatch = useDispatch();
@@ -46,12 +56,15 @@ export const FinalRound = () => {
   const card = useSelector(selectCard);
   const players = useSelector(selectPlayers);
   const turn = useSelector(selectTurn);
-  const decks = useSelector(selectDecks);
-  const jokers = useSelector(selectJokers);
+
+  const initialPlayers = useSelector(selectInitialPlayers);
 
   const numberOfCards = useSelector(selectNumberOfCards);
   const [flipCard, saveFlipCard] = useState(false);
   const [buttonClicked, saveButtonClicked] = useState('');
+  const [finished, saveFinished] = useState(false);
+
+  const modalizePlayers = useRef(null);
 
   useEffect(() => {
     if (players.length > 0) {
@@ -59,6 +72,38 @@ export const FinalRound = () => {
       saveFlipCard(false);
     }
   }, []);
+
+  const showAlert = () => {
+    if (players.length > 0) {
+      Alert.alert(t('bus_game.players_on_final'), setMessage(), [
+        {
+          text: t('no'),
+        },
+        {
+          text: t('yes'),
+          onPress: () => {
+            treatDone();
+          },
+          style: 'cancel',
+        },
+      ]);
+    }
+  };
+
+  const treatDone = () => {
+    for (let i = 0; i < players.length; i++) {
+      dispatch(removePlayer({ player: players[i] }));
+    }
+  };
+
+  const setMessage = () => {
+    var string = '';
+    players.forEach((player) => {
+      string = string.concat('\n', player.name);
+    });
+    string = string.concat(`\n\n${t('bus_game.treat_or_trick')}`);
+    return string;
+  };
 
   var success =
     players.length > 0 &&
@@ -97,19 +142,39 @@ export const FinalRound = () => {
   }
 
   function playAgain() {
-    dispatch(setNumberOfJokersAndDecks({ decks: decks, jokers: jokers }));
-    navigation.navigate('Election');
+    saveFinished(true);
+    dispatch(setPlayers({ players: initialPlayers }));
+    modalizePlayers.current?.open();
+  }
+
+  function continueToGame() {
+    modalizePlayers.current?.close();
+    navigation.navigate('BusConfig');
   }
 
   return (
     <View style={[flex.on]}>
-      {players.length > 0 ? (
+      {players.length > 0 && !finished ? (
         <SafeAreaView
           style={[
             flex.on,
             flex.centerContent,
             { backgroundColor: colors.secondary },
           ]}>
+          <FloatingTopBar
+            style={[
+              margins.mx4,
+              {
+                flexDirection: 'row',
+              },
+            ]}>
+            <Button
+              shadow="none"
+              bgColor="transparent"
+              onPress={() => showAlert()}>
+              <Icon name="close" size={24} color={colors.black} />
+            </Button>
+          </FloatingTopBar>
           <RNText
             style={[
               margins.mb2,
@@ -278,6 +343,11 @@ export const FinalRound = () => {
           </Button>
         </SafeAreaView>
       )}
+      <Portal>
+        <Modalize ref={modalizePlayers} adjustToContentHeight={true}>
+          <ModifyPlayers continueToGame={() => continueToGame()} game="Bus" />
+        </Modalize>
+      </Portal>
     </View>
   );
 };

@@ -34,6 +34,7 @@ import {
   finishFirstRound,
 } from '../../services/jota/jota.service';
 import { ModifyPlayers } from '../game-config/ModifyPlayers';
+import { IconArrow } from '../../ui/zicons/Arrow';
 
 export const Jota = () => {
   const { colors } = useTheme();
@@ -54,21 +55,6 @@ export const Jota = () => {
   useEffect(() => {
     dispatch(setTurn({ turn: 0 }));
   }, []);
-
-  useEffect(() => {
-    navigation.addListener('beforeRemove', (e) => {
-      e.preventDefault();
-
-      Alert.alert(t('close_game'), t('sure'), [
-        { text: t('no'), style: 'cancel', onPress: () => {} },
-        {
-          text: t('yes'),
-          style: 'destructive',
-          onPress: () => navigation.dispatch(e.data.action),
-        },
-      ]);
-    });
-  }, [navigation]);
 
   function setNextTurn() {
     if (diceSelected.number === 'J' && firstRound) {
@@ -113,45 +99,66 @@ export const Jota = () => {
     modalizePlayers.current?.close();
   };
 
+  function exitGame() {
+    Alert.alert(t('close_game'), t('sure'), [
+      { text: t('no'), style: 'cancel', onPress: () => {} },
+      {
+        text: t('yes'),
+        style: 'destructive',
+        onPress: () => {
+          navigation.navigate('Main');
+        },
+      },
+    ]);
+  }
+
   return (
     <SafeAreaView style={[flex.on, { backgroundColor: colors.secondary }]}>
-      {firstRound && (
+      {firstRound ? (
         <Text
           text="j_game.first_round"
           style={{ fontSize: 16, fontWeight: 'bold', textAlign: 'center' }}
         />
-      )}
-      {!firstRound && (
-        <FloatingTopBar>
-          <View
-            style={[
-              margins.mx4,
-              {
+      ) : (
+        <FloatingTopBar style={[margins.mx4, margins.mt2]}>
+          <View>
+            <View
+              style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
-              },
-            ]}>
+                width: '100%',
+              }}>
+              <Button
+                shadow="none"
+                onPress={() => exitGame()}
+                bgColor="transparent"
+                style={{ height: 30 }}>
+                <IconArrow height={20} width={20} rotate={270} />
+              </Button>
+              <RoundButton onPress={() => onOpenPlayers()}>
+                <Text
+                  text="J"
+                  style={{
+                    color: colors.white,
+                    fontWeight: 'bold',
+                    fontSize: 20,
+                  }}
+                />
+              </RoundButton>
+            </View>
             <RoundButton
               style={{
                 backgroundColor: colors.info,
                 borderColor: colors.black,
                 borderWidth: 1.5,
+                marginTop: 20,
+                marginLeft: 'auto',
               }}
               onPress={() => onOpenAddPlayers()}>
               <Text
                 text="+"
                 style={{
                   color: colors.black,
-                  fontWeight: 'bold',
-                  fontSize: 20,
-                }}
-              />
-            </RoundButton>
-            <RoundButton onPress={() => onOpenPlayers()}>
-              <Text
-                text="J"
-                style={{
-                  color: colors.white,
                   fontWeight: 'bold',
                   fontSize: 20,
                 }}

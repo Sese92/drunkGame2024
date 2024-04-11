@@ -70,7 +70,10 @@
       "place": "Place card",
       "to_final": "Go to final round",
       "last_card": "Last card before restart",
-      "game_finished": "You have finished the game"
+      "game_finished": "You have finished the game",
+      "new_game_players": "Players for next game",
+      "players_on_final": "The following players with cards still remain:",
+      "treat_or_trick": "Have you reached a deal with them?"
     }
   }
 }

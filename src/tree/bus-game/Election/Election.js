@@ -35,6 +35,7 @@ import {
   rightClicked,
   middleClicked,
 } from '../bus.utils';
+import { IconArrow } from '../../../ui/zicons/Arrow';
 
 export const Election = () => {
   const navigation = useNavigation();
@@ -52,21 +53,6 @@ export const Election = () => {
   const [buttonClicked, saveButtonClicked] = useState('');
 
   const modalizeHands = useRef(null);
-
-  useEffect(() => {
-    navigation.addListener('beforeRemove', (e) => {
-      e.preventDefault();
-
-      Alert.alert(t('close_game'), t('sure'), [
-        { text: t('no'), style: 'cancel', onPress: () => {} },
-        {
-          text: t('yes'),
-          style: 'destructive',
-          onPress: () => navigation.dispatch(e.data.action),
-        },
-      ]);
-    });
-  }, [navigation]);
 
   useEffect(() => {
     dispatch(setTurn({ turn: 0 }));
@@ -126,6 +112,19 @@ export const Election = () => {
         onOpen();
       }
     }
+  }
+
+  function exitGame() {
+    Alert.alert(t('close_game'), t('sure'), [
+      { text: t('no'), style: 'cancel', onPress: () => {} },
+      {
+        text: t('yes'),
+        style: 'destructive',
+        onPress: () => {
+          navigation.navigate('Main');
+        },
+      },
+    ]);
   }
 
   return (
@@ -283,12 +282,26 @@ export const Election = () => {
               <RowsModal navigation={navigation} onClose={() => onClose()} />
             </Modalize>
           </Portal>
-          <FloatingTopBar style={{ left: 'auto' }}>
-            <View style={[margins.mx4]}>
-              <RoundButton onPress={() => onOpenHands()}>
-                <Icon name="cards" size={23} color={colors.info} />
-              </RoundButton>
-            </View>
+          <FloatingTopBar
+            style={[
+              margins.mx4,
+              {
+                justifyContent: 'space-between',
+                flexDirection: 'row',
+                dislay: 'flex',
+                alignItems: 'center',
+              },
+            ]}>
+            <Button
+              shadow="none"
+              onPress={() => exitGame()}
+              bgColor="transparent"
+              style={{ height: 30 }}>
+              <IconArrow height={20} width={20} rotate={270} />
+            </Button>
+            <RoundButton onPress={() => onOpenHands()}>
+              <Icon name="cards" size={23} color={colors.info} />
+            </RoundButton>
           </FloatingTopBar>
           <Portal>
             <Modalize ref={modalizeHands} adjustToContentHeight={true}>

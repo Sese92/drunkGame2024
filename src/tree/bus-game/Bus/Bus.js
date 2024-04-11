@@ -27,6 +27,7 @@ import {
 } from '../../../features/bus/bus.store';
 import { setTurn, renewPlayers } from '../../../services/game/game.service';
 import { flipCard, finalRound } from '../../../services/bus/bus.service';
+import { IconArrow } from '../../../ui/zicons/Arrow';
 
 export const Bus = () => {
   const navigation = useNavigation();
@@ -68,15 +69,13 @@ export const Bus = () => {
   function nextCard() {
     if (filtered.length > 0) {
       Alert.alert(t('bus_game.title'), t('bus_game.info'), [
+        { text: t('no'), style: 'cancel', onPress: () => {} },
         {
-          text: t('cancel'),
-        },
-        {
-          text: t('continue'),
+          text: t('yes'),
+          style: 'destructive',
           onPress: () => {
             onCloseCard();
           },
-          style: 'cancel',
         },
       ]);
     } else {
@@ -104,6 +103,19 @@ export const Bus = () => {
     dispatch(finalRound());
     modalizeHands.current?.close();
     navigation.navigate('FinalRound');
+  }
+
+  function exitGame() {
+    Alert.alert(t('close_game'), t('sure'), [
+      { text: t('no'), style: 'cancel', onPress: () => {} },
+      {
+        text: t('yes'),
+        style: 'destructive',
+        onPress: () => {
+          navigation.navigate('Main');
+        },
+      },
+    ]);
   }
 
   return (
@@ -156,12 +168,26 @@ export const Bus = () => {
         </Modalize>
       </Portal>
 
-      <FloatingTopBar style={{ left: 'auto' }}>
-        <View style={[margins.mx4]}>
-          <RoundButton onPress={() => onOpenHands()}>
-            <Icon name="cards" size={23} color={colors.info} />
-          </RoundButton>
-        </View>
+      <FloatingTopBar
+        style={[
+          margins.mx4,
+          {
+            justifyContent: 'space-between',
+            flexDirection: 'row',
+            dislay: 'flex',
+            alignItems: 'center',
+          },
+        ]}>
+        <Button
+          shadow="none"
+          onPress={() => exitGame()}
+          bgColor="transparent"
+          style={{ height: 30 }}>
+          <IconArrow height={20} width={20} rotate={270} />
+        </Button>
+        <RoundButton onPress={() => onOpenHands()}>
+          <Icon name="cards" size={23} color={colors.info} />
+        </RoundButton>
       </FloatingTopBar>
 
       {rows * 2 + 1 > numberOfBusCards.length ? (

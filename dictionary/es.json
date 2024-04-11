@@ -70,7 +70,10 @@
       "place": "Colocar carta",
       "to_final": "Ir a la ronda final",
       "last_card": "Última carta antes de barajar",
-      "game_finished": "Habéis terminado el juego"
+      "game_finished": "Habéis terminado el juego",
+      "new_game_players": "Jugadores para la siguiente partida",
+      "players_on_final": "Todavía quedan los siguientes jugadores con cartas:",
+      "treat_or_trick": "¿Has llegado a un trato con ellos y quieres finalizar la partida?"
     }
   }
 }

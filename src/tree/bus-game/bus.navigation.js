@@ -15,9 +15,21 @@ export function BusTree() {
         headerShown: false,
       }}
       initialRouteName="Election">
-      <Stack.Screen name="Election" component={Election} />
-      <Stack.Screen name="Bus" component={Bus} />
-      <Stack.Screen name="FinalRound" component={FinalRound} />
+      <Stack.Screen
+        options={{ gestureEnabled: false }}
+        name="Election"
+        component={Election}
+      />
+      <Stack.Screen
+        options={{ gestureEnabled: false }}
+        name="Bus"
+        component={Bus}
+      />
+      <Stack.Screen
+        options={{ gestureEnabled: false }}
+        name="FinalRound"
+        component={FinalRound}
+      />
     </Stack.Navigator>
   );
 }

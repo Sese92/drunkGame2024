@@ -20,10 +20,26 @@ export function Tree() {
           headerShown: false,
         }}
         initialRouteName="Main">
-        <Stack.Screen name="Main" component={Main} />
-        <Stack.Screen name="BusConfig" component={BusConfig} />
-        <Stack.Screen name="JotaGame" component={Jota} />
-        <Stack.Screen name="BusGame" component={BusTree} />
+        <Stack.Screen
+          options={{ gestureEnabled: false }}
+          name="Main"
+          component={Main}
+        />
+        <Stack.Screen
+          options={{ gestureEnabled: false }}
+          name="BusConfig"
+          component={BusConfig}
+        />
+        <Stack.Screen
+          options={{ gestureEnabled: false }}
+          name="JotaGame"
+          component={Jota}
+        />
+        <Stack.Screen
+          options={{ gestureEnabled: false }}
+          name="BusGame"
+          component={BusTree}
+        />
       </Stack.Navigator>
     </Host>
   );

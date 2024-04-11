@@ -26,7 +26,7 @@ export const BusConfig = () => {
     // Add 3 to have at least one row on the final
     saveMinDecks(Math.ceil((players.length * 4 + 3) / 52));
     saveNbDecks(Math.ceil((players.length * 4 + 3) / 52));
-  }, []);
+  }, [players.length]);
 
   function continueToGame() {
     dispatch(setNumberOfJokersAndDecks({ decks: nbDecks, jokers: nbJokers }));

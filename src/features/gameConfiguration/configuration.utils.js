@@ -1,5 +1,4 @@
 export function setPlayers(players, game) {
-  console.log(players);
   const string = JSON.stringify(players);
   const goodPlayers = JSON.parse(string);
 
