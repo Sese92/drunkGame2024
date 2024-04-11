@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { SafeAreaView, View, Text as RNText, Alert } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTheme, useNavigation } from '@react-navigation/native';
@@ -38,6 +38,8 @@ export const Bus = () => {
   const busCards = useSelector(selectBusCards);
   const { t } = useTranslation();
 
+  const [cardShowed, saveCardShowed] = useState(false);
+
   const numberOfBusCards = busCards.filter((card) => card !== 0);
 
   const modalizeHands = useRef(null);
@@ -47,6 +49,7 @@ export const Bus = () => {
 
   useEffect(() => {
     dispatch(setTurn({ turn: 0 }));
+    saveCardShowed(false);
   }, []);
 
   const onOpenHands = () => {
@@ -54,10 +57,12 @@ export const Bus = () => {
   };
 
   const onOpenCard = () => {
+    saveCardShowed(true);
     modalizeCard.current?.open();
   };
 
   const onCloseCard = () => {
+    saveCardShowed(false);
     modalizeCard.current?.close();
     dispatch(flipCard({ card: card }));
   };
@@ -120,7 +125,7 @@ export const Bus = () => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <Display />
+      <Display round={numberOfBusCards.length / 2} />
 
       <Portal>
         <Modalize ref={modalizeHands} adjustToContentHeight={true}>
@@ -145,10 +150,12 @@ export const Bus = () => {
                 alignSelf: 'center',
                 marginBottom: filtered.length === 0 ? 30 : 0,
               }}
-              card={card}
+              card={cardShowed ? card : null}
             />
 
-            <PlayersHands playersPassed={filtered} card={card} />
+            {cardShowed && (
+              <PlayersHands playersPassed={filtered} card={card} />
+            )}
 
             <Button
               disabled={

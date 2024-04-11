@@ -256,24 +256,28 @@ export const SmallCard = ({ style, card, backSide = false }) => {
             Bus game
           </Text>
         </View>
-      ) : card.type !== 'Joker' ? (
-        <View
-          style={{
-            width: '100%',
-            height: '100%',
-            justifyContent: 'center',
-          }}>
-          <Text
+      ) : card ? (
+        card.type !== 'Joker' ? (
+          <View
             style={{
-              color: card.color,
-              textAlign: 'center',
-              fontSize: actuatedNormalize(15),
+              width: '100%',
+              height: '100%',
+              justifyContent: 'center',
             }}>
-            {card.number} {card.type}
-          </Text>
-        </View>
+            <Text
+              style={{
+                color: card.color,
+                textAlign: 'center',
+                fontSize: actuatedNormalize(15),
+              }}>
+              {card.number} {card.type}
+            </Text>
+          </View>
+        ) : (
+          <Joker width={60} height={'75%'} />
+        )
       ) : (
-        <Joker width={60} height={'75%'} />
+        <View></View>
       )}
     </View>
   );
