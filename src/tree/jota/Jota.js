@@ -120,7 +120,7 @@ export const Jota = () => {
           style={{ fontSize: 16, fontWeight: 'bold', textAlign: 'center' }}
         />
       ) : (
-        <FloatingTopBar style={[margins.mx4, margins.mt2]}>
+        <FloatingTopBar style={[margins.mx4, margins.mt2, { zIndex: 1 }]}>
           <View>
             <View
               style={{

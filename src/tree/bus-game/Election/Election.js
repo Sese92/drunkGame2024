@@ -286,6 +286,7 @@ export const Election = () => {
             style={[
               margins.mx4,
               {
+                zIndex: 1,
                 justifyContent: 'space-between',
                 flexDirection: 'row',
                 dislay: 'flex',

@@ -166,6 +166,7 @@ export const FinalRound = () => {
               margins.mx4,
               {
                 flexDirection: 'row',
+                zIndex: 1,
               },
             ]}>
             <Button
